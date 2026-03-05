@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prompt Optimizer</title>
+</head>
+<body>
+  <h1>Prompt Optimizer (via Ollama)</h1>
+
+  <label for="prompt">Enter your raw prompt:</label><br />
+  <textarea id="prompt" rows="5" cols="80"></textarea><br /><br />
+
+  <label for="model">Model (e.g. llama3, mistral):</label><br />
+  <input id="model" type="text" value="llama3" /><br /><br />
+
+  <button id="optimizeBtn">Optimize Prompt</button>
+
+  <h2>Optimized prompt (copy this into your AI model)</h2>
+  <textarea id="output" rows="10" cols="80" readonly></textarea>
+
+  <script>
+    const optimizeBtn = document.getElementById("optimizeBtn");
+    const promptInput = document.getElementById("prompt");
+    const modelInput = document.getElementById("model");
+    const outputArea = document.getElementById("output");
+
+    optimizeBtn.addEventListener("click", async () => {
+      const rawPrompt = promptInput.value.trim();
+      const model = modelInput.value.trim();
+
+      if (!rawPrompt) {
+        alert("Please enter a prompt.");
+        return;
+      }
+
+      try {
+        const res = await fetch("/optimize", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt: rawPrompt,
+            model: model,
+          }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          alert(`Error: ${err.detail}`);
+          return;
+        }
+
+        const data = await res.json();
+        outputArea.value = data.optimized;
+      } catch (err) {
+        alert("Network error. Is the FastAPI server running?");
+      }
+    });
+  </script>
+</body>
+</html>
