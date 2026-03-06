@@ -3,13 +3,15 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse
 import httpx
+import os
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
-# Serve static files (CSS/JS) if you add them later.
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Serve static files only if the directory exists
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 class PromptRequest:
