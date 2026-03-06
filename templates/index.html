@@ -14,12 +14,14 @@
   <input id="model" type="text" value="llama3" /><br /><br />
 
   <button id="optimizeBtn">Optimize Prompt</button>
+  <button id="clearBtn">Clear</button>
 
   <h2>Optimized prompt (copy this into your AI model)</h2>
   <textarea id="output" rows="10" cols="80" readonly></textarea>
 
   <script>
     const optimizeBtn = document.getElementById("optimizeBtn");
+    const clearBtn = document.getElementById("clearBtn");
     const promptInput = document.getElementById("prompt");
     const modelInput = document.getElementById("model");
     const outputArea = document.getElementById("output");
@@ -56,6 +58,12 @@
       } catch (err) {
         alert("Network error. Is the FastAPI server running?");
       }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      promptInput.value = "";
+      outputArea.value = "";
+      promptInput.focus();
     });
   </script>
 </body>
